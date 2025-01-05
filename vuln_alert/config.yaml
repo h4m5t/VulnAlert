@@ -1,0 +1,13 @@
+db_conn: sqlite3://vuln_v3.sqlite3
+interval: 30m
+enable_cve_filter: true
+no_github_search: false
+no_start_message: false
+diff_mode: false
+white_keywords: [ ]
+black_keywords: [ ]
+
+pusher:
+  - type: lark
+    access_token: "3fcef3df-0a78-4246-8175-1279e8de112c"
+    sign_secret: "nkRuJyNYumDLa7m8ePUYGc"
