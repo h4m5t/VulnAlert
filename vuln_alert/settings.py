@@ -128,32 +128,45 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+#TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_TZ = True
+#USE_TZ = True
 
+# vuln_alert/settings.py
 
+TIME_ZONE = 'Asia/Shanghai'  # 根据您的地理位置设置
+USE_TZ = False  # 根据需要设置
+
+#USE_TZ = False：使用本地时间。
+#USE_TZ = True：使用 UTC 时间，并在模板中根据时区进行转换。
 #LANGUAGE_CODE = 'zh-hans'
 
-TIME_ZONE = 'Asia/Shanghai'
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # 用于生产环境的静态文件收集
 
 
 # Static files (CSS, JavaScript, Images)
 #STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'vulnerabilities', 'static'),
+    os.path.join(BASE_DIR, 'static'),                  # 项目级别的静态文件
+    os.path.join(BASE_DIR, 'vulnerabilities', 'static'),  # 应用级别的静态文件（保留）
 ]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# vuln_alert/settings.py
+
+# 认证相关配置
+LOGIN_REDIRECT_URL = 'vulnerabilities:home'  # 登录成功后重定向到主页
+LOGOUT_REDIRECT_URL = 'login'  # 注销成功后重定向到登录页面
+LOGIN_URL = 'login'  # 未认证用户重定向到的登录页面

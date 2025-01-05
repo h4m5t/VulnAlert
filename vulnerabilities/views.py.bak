@@ -1,0 +1,183 @@
+# vulnerabilities/views.py
+
+# import re
+# from django.shortcuts import render, get_object_or_404
+# from .models import Vulnerability
+# from django.db import models
+
+# def home(request):
+#     total_vulnerabilities = Vulnerability.objects.count()
+#     severity_counts = Vulnerability.objects.values('severity').annotate(count=models.Count('severity'))
+#     # 转换为字典
+#     severity_counts_dict = {item['severity']: item['count'] for item in severity_counts}
+#     context = {
+#         'total_vulnerabilities': total_vulnerabilities,
+#         'severity_counts': severity_counts_dict,
+#     }
+#     return render(request, 'vulnerabilities/home.html', context)
+
+# def vulnerability_list(request):
+#     vulnerabilities = Vulnerability.objects.all()
+#     context = {
+#         'vulnerabilities': vulnerabilities
+#     }
+#     return render(request, 'vulnerabilities/vulnerability_list.html', context)
+
+# def vulnerability_detail(request, pk):
+#     vulnerability = get_object_or_404(Vulnerability, pk=pk)
+#     references = vulnerability.references
+
+#     parsed_references = []
+#     if references and isinstance(references, list):
+#         refs_str = references[0]
+#         parsed_references = [ref.strip() for ref in re.split(r'[;,]', refs_str) if ref.strip()]
+    
+#     context = {
+#         'vulnerability': vulnerability,
+#         'parsed_references': parsed_references
+#     }
+#     return render(request, 'vulnerabilities/vulnerability_detail.html', context)
+# vulnerabilities/views.py
+
+# from django.shortcuts import render, get_object_or_404
+# from django.contrib.auth.mixins import LoginRequiredMixin
+# from django.views.generic import TemplateView, ListView, DetailView
+# from .models import Vulnerability
+
+# class HomeView(LoginRequiredMixin, TemplateView):
+#     template_name = 'vulnerabilities/home.html'
+
+# class VulnerabilityListView(LoginRequiredMixin, ListView):
+#     model = Vulnerability
+#     template_name = 'vulnerabilities/vulnerability_list.html'
+#     context_object_name = 'vulnerabilities'
+#     paginate_by = 10  # 可选：分页，每页显示 10 条
+
+# class VulnerabilityDetailView(LoginRequiredMixin, DetailView):
+#     model = Vulnerability
+#     template_name = 'vulnerabilities/vulnerability_detail.html'
+#     context_object_name = 'vulnerability'
+
+# vulnerabilities/views.py
+
+# from django.contrib.auth.mixins import LoginRequiredMixin
+# from django.views.generic import TemplateView, ListView, DetailView
+# from .models import Vulnerability, Category  # 假设您有一个 Category 模型用于分类
+
+# class HomeView(LoginRequiredMixin, TemplateView):
+#     template_name = 'vulnerabilities/home.html'
+
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['total_vulnerabilities'] = Vulnerability.objects.count()
+#         context['categories'] = Category.objects.all()
+#         return context
+
+# class VulnerabilityListView(LoginRequiredMixin, ListView):
+#     model = Vulnerability
+#     template_name = 'vulnerabilities/vulnerability_list.html'
+#     context_object_name = 'vulnerabilities'
+#     paginate_by = 10  # 每页显示 10 条漏洞信息
+
+# class VulnerabilityDetailView(LoginRequiredMixin, DetailView):
+#     model = Vulnerability
+#     template_name = 'vulnerabilities/vulnerability_detail.html'
+#     context_object_name = 'vulnerability'
+
+# vulnerabilities/views.py
+
+import re
+from django.shortcuts import render, get_object_or_404
+from django.db import models
+from .models import Vulnerability
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+def home(request):
+    # 计算总漏洞数（包括严重性为空的漏洞）
+    total_vulnerabilities = Vulnerability.objects.count()
+    
+    # 按严重性分类统计漏洞数，排除严重性为空的漏洞
+    severity_counts = Vulnerability.objects.exclude(severity__isnull=True).exclude(severity='').values('severity').annotate(count=models.Count('severity'))
+    
+    # 转换为字典
+    severity_counts_dict = {item['severity']: item['count'] for item in severity_counts}
+    
+    # 定义所有可能的严重性等级
+    severity_levels = ['低危', '中危', '高危', '严重']
+    
+    # 确保所有严重性等级都有对应的计数，若不存在则设为0
+    for level in severity_levels:
+        if level not in severity_counts_dict:
+            severity_counts_dict[level] = 0
+    
+    context = {
+        'total_vulnerabilities': total_vulnerabilities,
+        'severity_counts': severity_counts_dict,
+    }
+    return render(request, 'vulnerabilities/home.html', context)
+
+# def vulnerability_list(request):
+#     vulnerabilities = Vulnerability.objects.all().order_by('-create_time')  # 按创建时间降序
+#     paginator = Paginator(vulnerabilities, 10)  # 每页显示 10 条
+#     page = request.GET.get('page')
+
+#     try:
+#         vulnerabilities_page = paginator.page(page)
+#     except PageNotAnInteger:
+#         vulnerabilities_page = paginator.page(1)
+#     except EmptyPage:
+#         vulnerabilities_page = paginator.page(paginator.num_pages)
+
+#     context = {
+#         'vulnerabilities': vulnerabilities_page
+#     }
+#     return render(request, 'vulnerabilities/vulnerability_list.html', context)
+
+
+# vulnerabilities/views.py
+
+def vulnerability_list(request):
+    vulnerabilities = Vulnerability.objects.all().order_by('-create_time').exclude(severity__isnull=True).exclude(severity='')
+
+    # 获取搜索参数
+    query = request.GET.get('q')
+    severity_filter = request.GET.get('severity')
+
+    if query:
+        vulnerabilities = vulnerabilities.filter(title__icontains=query)
+    if severity_filter and severity_filter in dict(Vulnerability.SEVERITY_CHOICES):
+        vulnerabilities = vulnerabilities.filter(severity=severity_filter)
+
+    paginator = Paginator(vulnerabilities, 12)  # 每页显示 10 条
+    page = request.GET.get('page')
+
+    try:
+        vulnerabilities_page = paginator.page(page)
+    except PageNotAnInteger:
+        vulnerabilities_page = paginator.page(1)
+    except EmptyPage:
+        vulnerabilities_page = paginator.page(paginator.num_pages)
+
+    context = {
+        'vulnerabilities': vulnerabilities_page,
+        'query': query or '',
+        'severity_filter': severity_filter or '',
+        'severity_choices': Vulnerability.SEVERITY_CHOICES,
+    }
+    return render(request, 'vulnerabilities/vulnerability_list.html', context)
+
+def vulnerability_detail(request, pk):
+    vulnerability = get_object_or_404(Vulnerability, pk=pk)
+    # 假设存在 references 字段，存储为 JSON 或列表
+    references = vulnerability.references  # 根据您的模型调整
+    
+    parsed_references = []
+    if references and isinstance(references, list):
+        refs_str = references[0]  # 假设 references 是列表，且第一个元素是字符串
+        parsed_references = [ref.strip() for ref in re.split(r'[;,]', refs_str) if ref.strip()]
+    
+    context = {
+        'vulnerability': vulnerability,
+        'parsed_references': parsed_references
+    }
+    return render(request, 'vulnerabilities/vulnerability_detail.html', context)

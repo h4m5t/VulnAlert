@@ -5,9 +5,10 @@ from django.shortcuts import render, get_object_or_404
 from django.db.models import Q, Count
 from .models import Vulnerability
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.contrib.auth.decorators import login_required
+from datetime import datetime
+from django.utils import timezone
 
-@login_required
+
 def home(request):
     # 计算总漏洞数（包括严重性为空的漏洞）
     total_vulnerabilities = Vulnerability.objects.count()
@@ -32,8 +33,6 @@ def home(request):
     }
     return render(request, 'vulnerabilities/home.html', context)
 
-
-@login_required
 def vulnerability_list(request):
     # 获取所有漏洞，按创建时间降序排列，排除严重性为空的漏洞
     vulnerabilities = Vulnerability.objects.all().order_by('-create_time').exclude(severity__isnull=True).exclude(severity='')
@@ -76,12 +75,45 @@ def vulnerability_list(request):
     return render(request, 'vulnerabilities/vulnerability_list.html', context)
 
 
-@login_required
+
+def parse_custom_datetime(raw_datetime_str):
+    """
+    解析非标准的时间字符串，例如：
+    "2025-01-04 23:31:37.736178 +0800 CST m=+0.287828918"
+    """
+    pattern = r'^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(?:\.\d+)?) ([+-]\d{4}) [A-Za-z]+'
+    match = re.match(pattern, raw_datetime_str)
+    if match:
+        dt_part = match.group(1)
+        tz_part = match.group(2)
+        dt_str = f"{dt_part} {tz_part}"
+        try:
+            # 解析带时区的时间
+            parsed_dt = datetime.strptime(dt_str, '%Y-%m-%d %H:%M:%S.%f %z')
+        except ValueError:
+            try:
+                # 在某些情况下，秒的小数部分可能缺失
+                parsed_dt = datetime.strptime(dt_str, '%Y-%m-%d %H:%M:%S %z')
+            except ValueError:
+                parsed_dt = None
+        return parsed_dt
+    return None
+
 def vulnerability_detail(request, pk):
     vulnerability = get_object_or_404(Vulnerability, pk=pk)
-    # 假设存在 references 字段，存储为 JSON 或列表
-    references = vulnerability.references  # 根据您的模型调整
     
+    # 解析 create_time 和 update_time
+    parsed_create_time = None
+    parsed_update_time = None
+    
+    if vulnerability.create_time:
+        parsed_create_time = parse_custom_datetime(vulnerability.create_time)
+    
+    if vulnerability.update_time:
+        parsed_update_time = parse_custom_datetime(vulnerability.update_time)
+    
+    # 解析参考资料
+    references = vulnerability.references
     parsed_references = []
     if references and isinstance(references, list):
         refs_str = references[0]  # 假设 references 是列表，且第一个元素是字符串
@@ -89,6 +121,8 @@ def vulnerability_detail(request, pk):
     
     context = {
         'vulnerability': vulnerability,
-        'parsed_references': parsed_references
+        'parsed_references': parsed_references,
+        'parsed_create_time': parsed_create_time,
+        'parsed_update_time': parsed_update_time,
     }
     return render(request, 'vulnerabilities/vulnerability_detail.html', context)

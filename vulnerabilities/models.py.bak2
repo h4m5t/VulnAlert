@@ -1,0 +1,35 @@
+# vulnerabilities/models.py
+
+from django.db import models
+
+class Vulnerability(models.Model):
+    SEVERITY_CHOICES = [
+        ('低危', '低危'),
+        ('中危', '中危'),
+        ('高危', '高危'),
+        ('严重', '严重'),
+    ]
+    
+    key = models.CharField(max_length=100, unique=True, verbose_name='Key')
+    title = models.CharField(max_length=200, verbose_name='标题')
+    cve = models.CharField(max_length=50, blank=True, null=True, unique=True, verbose_name='CVE')
+    description = models.TextField(verbose_name='描述')
+    severity = models.CharField(max_length=10, choices=SEVERITY_CHOICES, blank=True, null=True, verbose_name='严重性')
+    source = models.CharField(max_length=100, verbose_name='来源')
+    disclosure = models.DateField(blank=True, null=True, verbose_name='披露时间')  # 假设为DateField
+    solutions = models.TextField(blank=True, null=True, verbose_name='解决方案')
+    pushed = models.BooleanField(default=False, verbose_name='推送状态')
+    
+    # 由于时间格式非标准，先将它们定义为CharField
+    create_time = models.CharField(max_length=100, blank=True, null=True, verbose_name='创建时间')
+    update_time = models.CharField(max_length=100, blank=True, null=True, verbose_name='更新时间')
+    
+    references = models.JSONField(blank=True, null=True, verbose_name='参考资料')
+    tags = models.ManyToManyField('Tag', blank=True, verbose_name='标签')  # 假设有Tag模型
+    github_search = models.JSONField(blank=True, null=True, verbose_name='GitHub 搜索')
+    
+    class Meta:
+        db_table = 'vuln_informations'  # 映射到现有的表
+
+    def __str__(self):
+        return f"{self.key} - {self.title}"

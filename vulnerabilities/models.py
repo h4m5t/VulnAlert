@@ -4,9 +4,9 @@ from django.db import models
 
 class Vulnerability(models.Model):
     SEVERITY_CHOICES = [
-        ('低', '低'),
-        ('中', '中'),
-        ('高', '高'),
+        ('低危', '低危'),
+        ('中危', '中危'),
+        ('高危', '高危'),
         ('严重', '严重'),
     ]
 
@@ -14,7 +14,8 @@ class Vulnerability(models.Model):
     key = models.CharField(max_length=100, unique=True, help_text="唯一标识符")
     title = models.CharField(max_length=255, help_text="漏洞标题")
     description = models.TextField(help_text="漏洞描述")
-    severity = models.CharField(max_length=10, choices=SEVERITY_CHOICES, help_text="漏洞严重性")
+    #severity = models.CharField(max_length=10, choices=SEVERITY_CHOICES, help_text="漏洞严重性")
+    severity = models.CharField(max_length=10, choices=SEVERITY_CHOICES, blank=True, null=True,help_text="漏洞严重性")
     cve = models.CharField(max_length=50, blank=True, null=True, help_text="CVE编号")
     disclosure = models.DateField(blank=True, null=True, help_text="披露日期")
     solutions = models.TextField(blank=True, null=True, help_text="解决方案")
