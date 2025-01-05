@@ -1,0 +1,14 @@
+# 虚拟环境
+venv/
+
+# 缓存文件
+__pycache__/
+*.pyc
+
+# 数据库文件
+#db.sqlite3
+#vuln_v3.sqlite3
+
+# IDE相关文件
+.vscode/
+.idea/
