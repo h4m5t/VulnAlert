@@ -1,6 +1,6 @@
 # VulnAlert
 
-![VulnAlert](https://socialify.git.ci/h4m5t/vulnalert/image?custom_description=%E5%9F%BA%E4%BA%8E+Django+%E7%9A%84%E6%BC%8F%E6%B4%9E%E7%AE%A1%E7%90%86%E9%A2%84%E8%AD%A6%E7%B3%BB%E7%BB%9F&description=1&forks=1&issues=1&logo=https://cdn-icons-png.flaticon.com/512/13063/13063685.png&name=1&owner=1&pattern=Plus&stargazers=1&theme=Light)
+![VulnAlert](https://socialify.git.ci/h4m5t/vulnalert/image?custom_description=%E5%9F%BA%E4%BA%8E+Django+%E7%9A%84%E6%BC%8F%E6%B4%9E%E7%AE%A1%E7%90%86%E9%A2%84%E8%AD%A6%E7%B3%BB%E7%BB%9F&description=1&forks=1&issues=1&logo=https://raw.githubusercontent.com/h4m5t/vulnalert/refs/heads/main/static/img/logo.png&name=1&owner=1&pattern=Plus&stargazers=1&theme=Light)
 
 基于 Django 的漏洞管理预警系统，整合了 [WatchVuln](https://github.com/zema1/watchvuln) 漏洞爬虫引擎，为用户提供详细的漏洞预警信息。
 
@@ -24,7 +24,7 @@
   - [用户认证](#用户认证)  
   - [管理漏洞](#管理漏洞)  
 - [致谢](#致谢)  
-- [To do](#To Do)  
+- [To Do](#To Do)  
 
 ---
 
@@ -136,7 +136,7 @@ python manage.py runserver
 
 ---
 
-## To do
+## To Do
 
 - [x] 添加漏洞模糊搜索功能
 - [x] 实现用户角色管理
