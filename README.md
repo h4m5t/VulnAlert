@@ -1,6 +1,6 @@
 # VulnAlert
 
-![VulnAlert](https://socialify.git.ci/h4m5t/vulnalert/image?custom_description=%E5%9F%BA%E4%BA%8E+Django+%E7%9A%84%E6%BC%8F%E6%B4%9E%E7%AE%A1%E7%90%86%E9%A2%84%E8%AD%A6%E7%B3%BB%E7%BB%9F&description=1&forks=1&issues=1&logo=https://raw.githubusercontent.com/h4m5t/vulnalert/refs/heads/main/static/img/logo.png&name=1&owner=1&pattern=Plus&stargazers=1&theme=Light)
+![VulnAlert](https://socialify.git.ci/h4m5t/vulnalert/image?custom_description=%E5%9F%BA%E4%BA%8E+Django+%E7%9A%84%E6%BC%8F%E6%B4%9E%E7%AE%A1%E7%90%86%E9%A2%84%E8%AD%A6%E7%B3%BB%E7%BB%9F&description=1&forks=1&issues=1&logo=https%3A%2F%2Fraw.githubusercontent.com%2Fh4m5t%2Fvulnalert%2Frefs%2Fheads%2Fmain%2Fstatic%2Fimg%2Flogo.png&name=1&owner=1&stargazers=1&theme=Light)
 
 基于 Django 的漏洞管理预警系统，整合了 [WatchVuln](https://github.com/zema1/watchvuln) 漏洞爬虫引擎，为用户提供详细的漏洞预警信息。
 
@@ -14,7 +14,7 @@
   - [克隆仓库](#克隆仓库)  
   - [创建并激活虚拟环境](#创建并激活虚拟环境)  
   - [安装依赖](#安装依赖)  
-  - [下载并运行 WatchVuln](#下载并运行-watchvuln)  
+  - [运行 WatchVuln](#运行-watchvuln)  
   - [配置数据库](#配置数据库)  
   - [创建迁移文件与应用迁移](#创建迁移文件与应用迁移)  
   - [创建超级用户](#创建超级用户)  
@@ -30,7 +30,7 @@
 ## 功能
 
 - **用户认证与权限控制**：使用 Django 内建的认证机制，保护敏感漏洞信息仅授权可见。  
-- **漏洞管理**：支持查看、搜索、分页浏览漏洞，详细信息包括描述、严重程度、CVE 参考等。  
+- **漏洞管理**：支持查看、搜索、严重等级筛选、分页浏览漏洞，详细信息包括描述、CVE官方链接等。  
 - **易用且简洁的界面**：前端基于 [Start Bootstrap SB Admin 2](https://startbootstrap.com/theme/sb-admin-2)，提供响应式布局与清晰的操作逻辑。  
 - **WatchVuln 集成**：自动获取高价值漏洞并存储到本地 SQLite 数据库 `vuln_v3.sqlite3`，减少手动收集的工作量。  
 
@@ -58,8 +58,8 @@
 
 ### 克隆仓库
 ```bash
-git clone https://github.com/h4m5t/vulnalert.git
-cd vulnalert
+git clone https://github.com/h4m5t/VulnAlert.git
+cd VulnAlert
 ```
 
 ### 创建并激活虚拟环境
@@ -86,9 +86,9 @@ pip install -r requirements.txt
    ```bash
    ./watchvuln.exe  -c config.yaml
    ```
-   该命令会自动生成 `vuln_v3.sqlite3` 数据库。
+   该命令会自动生成 `vuln_v3.sqlite3` 数据库到`database`文件夹下。
 
-
+---
 
 可以根据需要修改源码，前提是安装go环境。
 
@@ -101,17 +101,91 @@ go env -w GOPROXY=https://goproxy.cn,direct
 进入watchvuln目录：
 
 ```
+cd watchvuln/
 ```
 
+下载依赖：
 
+```
+go mod tidy
+```
 
+运行项目：
 
+```
+go run main.go -c config.yaml
+```
+
+也可以编译为可执行文件再运行：
+
+Win64:
+
+```
+set GOOS=windows
+set GOARCH=amd64
+go build -o watchvuln-windows-amd64.exe main.go
+```
+
+Linux64:
+
+```
+set GOOS=linux
+set GOARCH=amd64
+go build -o watchvuln-linux-amd64 main.go
+```
+
+macOS ARM
+
+```
+set GOOS=darwin
+set GOARCH=arm64
+go build -o watchvuln-darwin-arm64 main.go
+```
+
+快速编译脚本`watchvuln/build.sh`：
+
+```
+#!/bin/bash
+
+OUTPUT_DIR="dist"
+mkdir -p $OUTPUT_DIR
+
+export CGO_ENABLED=0
+
+declare -a TARGETS=(
+    "windows/amd64"
+    "linux/amd64"
+    "darwin/arm64"
+)
+
+for TARGET in "${TARGETS[@]}"
+do
+    GOOS=$(echo $TARGET | cut -d '/' -f 1)
+    GOARCH=$(echo $TARGET | cut -d '/' -f 2)
+    
+    OUTPUT_NAME="watchvuln-${GOOS}-${GOARCH}"
+    if [ "$GOOS" = "windows" ]; then
+        OUTPUT_NAME+=".exe"
+    fi
+    
+    echo "编译目标：$GOOS/$GOARCH -> $OUTPUT_NAME"
+    env GOOS=$GOOS GOARCH=$GOARCH go build -o $OUTPUT_DIR/$OUTPUT_NAME main.go
+    
+    if [ $? -eq 0 ]; then
+        echo "成功编译：$OUTPUT_NAME"
+    else
+        echo "编译失败：$OUTPUT_NAME"
+    fi
+done
+
+echo "所有编译完成，输出位于 '$OUTPUT_DIR' 文件夹中。"
+```
 
 
 
 ### 配置数据库
 
-- VulnAlert 默认使用与 WatchVuln 同步的 `vuln_v3.sqlite3` 文件进行数据读取。建议使用默认的 SQLite3 数据库。若需使用其他数据库，请在 `vuln_alert/settings.py` 中以及 WatchVuln 的配置文件`config.yaml`中进行相应修改以保持一致。
+- VulnAlert 默认使用与 WatchVuln 同步的 `/databse/vuln_v3.sqlite3` 文件进行数据读取。建议使用默认的 SQLite3 数据库。若需使用其他数据库，请在 `vuln_alert/settings.py` 中以及 WatchVuln 的配置文件`config.yaml`中进行相应修改以保持一致。
 
 ### 创建迁移文件与应用迁移
 ```bash
@@ -165,6 +239,6 @@ python manage.py runserver
 
 
 
-##  Stargazers over time
+## Stargazers over time
 
- [![Stargazers over time](https://starchart.cc/h4m5t/vulnalert.svg?variant=adaptive)](https://starchart.cc/h4m5t/vulnalert)
+[![Stargazers over time](https://starchart.cc/h4m5t/VulnAlert.svg?variant=adaptive)](https://starchart.cc/h4m5t/VulnAlert)

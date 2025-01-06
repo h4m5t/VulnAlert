@@ -1,4 +1,4 @@
-db_conn: sqlite3://database/vuln_v3.sqlite3
+db_conn: sqlite3://../database/vuln_v3.sqlite3
 interval: 30m
 enable_cve_filter: true
 no_github_search: false
