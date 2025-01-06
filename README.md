@@ -78,15 +78,36 @@ venv\Scripts\activate
 ```bash
 pip install -r requirements.txt
 ```
-### 下载并运行 WatchVuln
+### 运行 WatchVuln
 
-1. 前往 [WatchVuln Releases](https://github.com/zema1/watchvuln/releases)，下载适合你平台的二进制文件。  
+1. 前往 [WatchVuln Releases](https://github.com/zema1/watchvuln/releases)，下载适合平台的二进制文件。  
 2. 将该二进制文件放在当前目录或可执行路径中。  
 3. 执行：  参考WatchVuln教程
    ```bash
-   ./watchvuln  -c config.yaml
+   ./watchvuln.exe  -c config.yaml
    ```
    该命令会自动生成 `vuln_v3.sqlite3` 数据库。
+
+
+
+可以根据需要修改源码，前提是安装go环境。
+
+配置go代理：
+
+```
+go env -w GOPROXY=https://goproxy.cn,direct
+```
+
+进入watchvuln目录：
+
+```
+```
+
+
+
+
+
+
 
 ### 配置数据库
 
