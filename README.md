@@ -90,9 +90,13 @@ pip install -r requirements.txt
 
 ---
 
-可以根据需要修改源码，前提是安装go环境。
+如果需要，可以修改源码。
 
-配置go代理：
+<details>
+<summary>自行编译watchvuln</summary>
+
+
+安装go环境，配置go代理：
 
 ```
 go env -w GOPROXY=https://goproxy.cn,direct
@@ -119,7 +123,6 @@ go run main.go -c config.yaml
 也可以编译为可执行文件再运行：
 
 Win64:
-
 ```
 set GOOS=windows
 set GOARCH=amd64
@@ -127,15 +130,13 @@ go build -o watchvuln-windows-amd64.exe main.go
 ```
 
 Linux64:
-
 ```
 set GOOS=linux
 set GOARCH=amd64
 go build -o watchvuln-linux-amd64 main.go
 ```
 
-macOS ARM
-
+macOS ARM:
 ```
 set GOOS=darwin
 set GOARCH=arm64
@@ -144,7 +145,7 @@ go build -o watchvuln-darwin-arm64 main.go
 
 快速编译脚本`watchvuln/build.sh`：
 
-```
+```bash
 #!/bin/bash
 
 OUTPUT_DIR="dist"
@@ -180,6 +181,10 @@ done
 
 echo "所有编译完成，输出位于 '$OUTPUT_DIR' 文件夹中。"
 ```
+
+</details>
+
+
 
 
 
