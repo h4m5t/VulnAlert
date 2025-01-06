@@ -98,46 +98,46 @@ pip install -r requirements.txt
 
 安装go环境，配置go代理：
 
-```
+```bash
 go env -w GOPROXY=https://goproxy.cn,direct
 ```
 
 进入watchvuln目录：
 
-```
+```bash
 cd watchvuln/
 ```
 
 下载依赖：
 
-```
+```bash
 go mod tidy
 ```
 
 运行项目：
 
-```
+```bash
 go run main.go -c config.yaml
 ```
 
 也可以编译为可执行文件再运行：
 
 Win64:
-```
+```bash
 set GOOS=windows
 set GOARCH=amd64
 go build -o watchvuln-windows-amd64.exe main.go
 ```
 
 Linux64:
-```
+```bash
 set GOOS=linux
 set GOARCH=amd64
 go build -o watchvuln-linux-amd64 main.go
 ```
 
 macOS ARM:
-```
+```bash
 set GOOS=darwin
 set GOARCH=arm64
 go build -o watchvuln-darwin-arm64 main.go
@@ -186,11 +186,9 @@ echo "所有编译完成，输出位于 '$OUTPUT_DIR' 文件夹中。"
 
 
 
-
-
 ### 配置数据库
 
-- VulnAlert 默认使用与 WatchVuln 同步的 `/databse/vuln_v3.sqlite3` 文件进行数据读取。建议使用默认的 SQLite3 数据库。若需使用其他数据库，请在 `vuln_alert/settings.py` 中以及 WatchVuln 的配置文件`config.yaml`中进行相应修改以保持一致。
+- VulnAlert 默认使用与 WatchVuln 同步的 `/databse/vuln_v3.sqlite3` 文件进行数据读取。建议使用默认的 SQLite3 数据库即可。若需使用其他数据库，请在 `vuln_alert/settings.py` 中以及 WatchVuln 的配置文件`config.yaml`中进行相应修改以保持一致。
 
 ### 创建迁移文件与应用迁移
 ```bash
@@ -239,6 +237,8 @@ python manage.py runserver
 
 - [x] 添加漏洞模糊搜索功能
 - [x] 实现用户角色管理
+- [ ] 优化创建和更新时间显示
+- [ ] 实现显示多个参考资料
 - [ ] 优化数据可视化功能
 - [ ] 实现漏洞导入导出功能
 
