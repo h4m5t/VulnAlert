@@ -9,5 +9,5 @@ black_keywords: [ ]
 
 pusher:
   - type: lark
-    access_token: "3fcef3df-0a78-4246-8175-1279e8de112c"
-    sign_secret: "nkRuJyNYumDLa7m8ePUYGc"
+    access_token: ""
+    sign_secret: ""
