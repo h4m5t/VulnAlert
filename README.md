@@ -236,11 +236,19 @@ python manage.py runserver
 ## To Do
 
 - [x] 添加漏洞模糊搜索功能
+- [x] 实现漏洞严重性筛选功能
 - [x] 实现用户角色管理
 - [ ] 优化创建和更新时间显示
 - [ ] 实现显示多个参考资料
-- [ ] 优化数据可视化功能
+- [ ] 优化数据可视化功能 Echarts
 - [ ] 实现漏洞导入导出功能
+- [ ] 新增Mysql数据库配置方法
+- [ ] 新增爬虫数据源：
+  - [ ] 安全星图平台https://ti.dbappsecurity.com.cn/vul
+  - [ ] 360POC++ https://poc.shuziguanxing.com/#/issueList
+  - [ ] 绿盟安全漏洞库http://www.nsfocus.net/index.php?act=sec_bug
+
+- [ ] 参考https://github.com/alb-uss/SECMON
 
 
 
