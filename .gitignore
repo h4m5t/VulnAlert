@@ -5,13 +5,13 @@ venv/
 __pycache__/
 *.pyc
 
-# 数据库文件
-database/db.sqlite3
-database/vuln_v3.sqlite3
-database/vuln_v3.sqlite3.bak
 
 # IDE相关文件
 .vscode/
 .idea/
 
 .DS_Store
+
+# 数据库文件
+database/vuln_v3.sqlite3
+database/vuln_v3.sqlite3.bak
