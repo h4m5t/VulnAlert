@@ -2,13 +2,14 @@ package ctrl
 
 import (
 	"encoding/json"
-	"entgo.io/ent/dialect"
 	"fmt"
-	"github.com/kataras/golog"
-	"github.com/zema1/watchvuln/push"
 	"net/url"
 	"os"
 	"time"
+
+	"entgo.io/ent/dialect"
+	"github.com/kataras/golog"
+	"github.com/zema1/watchvuln/push"
 )
 
 type WatchVulnAppConfig struct {
@@ -55,7 +56,7 @@ func (c *WatchVulnAppConfig) Init() {
 		c.Interval = "1h"
 	}
 	if len(c.Sources) == 0 {
-		c.Sources = []string{"avd", "chaitin", "nox", "oscs", "threatbook", "seebug", "struts2", "kev", "venustech"}
+		c.Sources = []string{"avd", "chaitin", "nox", "oscs", "threatbook", "seebug", "struts2", "kev", "venustech", "xingtu"}
 
 	}
 

@@ -1,7 +1,7 @@
 # Database Configuration
 # 数据库连接字符串，支持 sqlite3、mysql、postgres
 # sqlite3 格式：sqlite3://path/to/db.sqlite3
-# mysql 格式：mysql://user:pass@tcp(host:port)/dbname
+# mysql 格式：mysql://user:pass@host:port/dbname
 # postgres 格式：postgres://user:pass@host:port/dbname
 db_conn: sqlite3://../database/vuln_v3.sqlite3
 
@@ -28,7 +28,9 @@ no_start_message: false
 # venustech: 启明星辰漏洞平台
 # chaitin: 长亭科技漏洞平台
 # kev: CISA已知被利用漏洞目录
-sources: ["avd","ti","oscs","threatbook","seebug","struts2","venustech","chaitin","kev"]
+# xingtu: 安恒安全星图平台
+# sources: ["avd","ti","oscs","threatbook","seebug","struts2","venustech","chaitin","kev","xingtu"]
+sources: ["xingtu"]
 
 # Feature Flags
 # 是否开启差异模式，开启后跳过初始化直接检查漏洞更新
