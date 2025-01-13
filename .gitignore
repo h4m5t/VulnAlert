@@ -6,8 +6,9 @@ __pycache__/
 *.pyc
 
 # 数据库文件
-db.sqlite3
-vuln_v3.sqlite3
+database/db.sqlite3
+database/vuln_v3.sqlite3
+database/vuln_v3.sqlite3.bak
 
 # IDE相关文件
 .vscode/

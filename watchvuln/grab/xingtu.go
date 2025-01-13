@@ -101,6 +101,7 @@ func (x *XingtuCrawler) parseVulnDetail(ctx context.Context, dasID string) (*Vul
 	cveRe := regexp.MustCompile(`CVE编号：(CVE-\d{4}-\d+)`)
 	timeRe := regexp.MustCompile(`发布时间：(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})`)
 	vulnResultRe := regexp.MustCompile(`<span class="hole-result"[^>]*>([^<]+)</span>`)
+	solutionRe := regexp.MustCompile(`(?s)<div class="detail-box detail-box-6".*?<div class="detail-desc"[^>]*>(.*?)</div>`)
 
 	// 提取信息
 	title := ""
@@ -155,6 +156,12 @@ func (x *XingtuCrawler) parseVulnDetail(ctx context.Context, dasID string) (*Vul
 		}
 	}
 
+	// 提取补丁修复信息
+	solutions := ""
+	if matches := solutionRe.FindStringSubmatch(content); len(matches) > 1 {
+		solutions = strings.TrimSpace(matches[1])
+	}
+
 	// 如果没有找到标题，说明页面可能无效
 	if title == "" {
 		return nil, fmt.Errorf("empty title, page might be invalid")
@@ -167,6 +174,7 @@ func (x *XingtuCrawler) parseVulnDetail(ctx context.Context, dasID string) (*Vul
 		Severity:    severity,
 		CVE:         cveID,
 		Disclosure:  disclosure,
+		Solutions:   solutions,
 		From:        url,
 		Tags:        tags,
 		Creator:     x,

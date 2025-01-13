@@ -100,6 +100,8 @@ func NewApp(config *WatchVulnAppConfig) (*WatchVulnApp, error) {
 			grabs = append(grabs, grab.NewVenustechCrawler())
 		case "xingtu":
 			grabs = append(grabs, grab.NewXingtuCrawler())
+		case "shuziguanxing":
+			grabs = append(grabs, grab.NewShuZiGuanXingCrawler())
 		default:
 			return nil, fmt.Errorf("invalid grab source %s", part)
 		}

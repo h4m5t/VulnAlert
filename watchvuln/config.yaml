@@ -29,8 +29,9 @@ no_start_message: false
 # chaitin: 长亭科技漏洞平台
 # kev: CISA已知被利用漏洞目录
 # xingtu: 安恒安全星图平台
-# sources: ["avd","ti","oscs","threatbook","seebug","struts2","venustech","chaitin","kev","xingtu"]
-sources: ["xingtu"]
+# shuziguanxing 360POC++数字观星平台
+sources: ["avd","ti","oscs","threatbook","seebug","struts2","venustech","chaitin","kev","xingtu","shuziguanxing"]
+
 
 # Feature Flags
 # 是否开启差异模式，开启后跳过初始化直接检查漏洞更新

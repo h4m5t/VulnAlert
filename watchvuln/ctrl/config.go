@@ -56,7 +56,7 @@ func (c *WatchVulnAppConfig) Init() {
 		c.Interval = "1h"
 	}
 	if len(c.Sources) == 0 {
-		c.Sources = []string{"avd", "chaitin", "nox", "oscs", "threatbook", "seebug", "struts2", "kev", "venustech", "xingtu"}
+		c.Sources = []string{"avd", "chaitin", "nox", "oscs", "threatbook", "seebug", "struts2", "kev", "venustech", "xingtu", "shuziguanxing"}
 
 	}
 

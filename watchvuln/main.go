@@ -4,12 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/zema1/watchvuln/push"
-	"gopkg.in/yaml.v3"
 	"os"
 	"os/signal"
 	"strings"
 	"time"
+
+	"github.com/zema1/watchvuln/push"
+	"gopkg.in/yaml.v3"
 
 	"github.com/zema1/watchvuln/ctrl"
 
@@ -154,7 +155,7 @@ func main() {
 			Name:     "sources",
 			Aliases:  []string{"s"},
 			Usage:    "set vuln sources",
-			Value:    "avd,nox,oscs,threatbook,seebug,struts2,kev,venustech",
+			Value:    "avd,nox,oscs,threatbook,seebug,struts2,kev,venustech，xingtu,shuziguanxing",
 			Category: "[Launch Options]",
 		},
 		&cli.StringFlag{
