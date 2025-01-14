@@ -252,11 +252,8 @@ python manage.py runserver
 - [ ] 优化数据可视化功能 Echarts
 - [ ] 实现漏洞导入导出功能
 - [ ] 新增Mysql数据库配置方法
-- [ ] 新增爬虫数据源：
-  - [ ] 安全星图平台https://ti.dbappsecurity.com.cn/vul
-  - [ ] 360POC++ https://poc.shuziguanxing.com/#/issueList
-  - [ ] 绿盟安全漏洞库http://www.nsfocus.net/index.php?act=sec_bug
-
+- [x] 新增爬虫数据源：安全星图平台https://ti.dbappsecurity.com.cn/vul
+- [x] 新增爬虫数据源：360POC++ https://poc.shuziguanxing.com/#/issueList
 - [ ] 参考https://github.com/alb-uss/SECMON
 
 
