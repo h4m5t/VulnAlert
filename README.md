@@ -120,6 +120,15 @@ go mod tidy
 go run main.go -c config.yaml
 ```
 
+后台运行：
+
+```bash
+#Linux/Mac
+nohup go run main.go -c config.yaml > log.txt 2>&1 &
+#Win
+start /b watchvuln-windows-amd64.exe -c config.yaml > logs.txt 2>&1
+```
+
 也可以编译为可执行文件再运行：
 
 Win64:
@@ -143,7 +152,7 @@ set GOARCH=arm64
 go build -o watchvuln-darwin-arm64 main.go
 ```
 
-快速编译脚本`watchvuln/build.sh`：
+快速编译脚本`watchvuln/build.sh`：(Windows下编译脚本是build.bat)
 
 ```bash
 #!/bin/bash
