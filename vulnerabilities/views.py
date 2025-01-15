@@ -140,6 +140,8 @@ def vulnerability_list(request):
     
     # 获取严重性过滤参数
     severity_filter = request.GET.get('severity', '').strip()
+
+    pushed_filter = request.GET.get('pushed', '')  # 新增获取推送状态参数
     
     # 应用搜索条件
     if query:
@@ -153,6 +155,13 @@ def vulnerability_list(request):
     # 应用严重性过滤条件
     if severity_filter and severity_filter in dict(Vulnerability.SEVERITY_CHOICES):
         vulnerabilities = vulnerabilities.filter(severity=severity_filter)
+    
+    # 处理推送状态过滤
+    if pushed_filter:
+        if pushed_filter.lower() in ['true', '1', 'yes', '已推送']:
+            vulnerabilities = vulnerabilities.filter(pushed=True)
+        elif pushed_filter.lower() in ['false', '0', 'no', '未推送']:
+            vulnerabilities = vulnerabilities.filter(pushed=False)
     
     # 分页设置
     paginator = Paginator(vulnerabilities, 15)  # 每页显示 15 条
