@@ -178,6 +178,7 @@ def vulnerability_list(request):
         'vulnerabilities': vulnerabilities_page,
         'query': query,
         'severity_filter': severity_filter,
+        'pushed_filter': pushed_filter,  # 确保推送状态过滤参数传递到模板
         'severity_choices': Vulnerability.SEVERITY_CHOICES,
     }
     return render(request, 'vulnerabilities/vulnerability_list.html', context)

@@ -139,16 +139,16 @@
                 </div>
                 <div class="mt-4 text-center small">
                     <span class="mr-2">
-                        <i class="fas fa-circle text-danger"></i> 严重
+                        <i class="fas fa-circle text-dark"></i> 严重
                     </span>
                     <span class="mr-2">
-                        <i class="fas fa-circle text-warning"></i> 高危
+                        <i class="fas fa-circle text-danger"></i> 高危
                     </span>
                     <span class="mr-2">
-                        <i class="fas fa-circle text-info"></i> 中危
+                        <i class="fas fa-circle text-warning"></i> 中危
                     </span>
                     <span class="mr-2">
-                        <i class="fas fa-circle text-secondary"></i> 低危
+                        <i class="fas fa-circle text-info"></i> 低危
                     </span>
                 </div>
             </div>
@@ -189,9 +189,17 @@
                                 </td>
                                 <td><code>{{ vuln.cve|default:"--" }}</code></td>
                                 <td>
-                                    <span class="badge badge-{% if vuln.severity == '严重' %}danger{% elif vuln.severity == '高危' %}warning{% elif vuln.severity == '中危' %}info{% else %}secondary{% endif %} badge-pill">
-                                        {{ vuln.severity|default:"未定级" }}
-                                    </span>
+                                    {% if vuln.severity == '严重' %}
+                                        <span class="badge badge-dark badge-pill">{{ vuln.severity }}</span>
+                                    {% elif vuln.severity == '高危' %}
+                                        <span class="badge badge-danger badge-pill">{{ vuln.severity }}</span>
+                                    {% elif vuln.severity == '中危' %}
+                                        <span class="badge badge-warning badge-pill">{{ vuln.severity }}</span>
+                                    {% elif vuln.severity == '低危' %}
+                                        <span class="badge badge-info badge-pill">{{ vuln.severity }}</span>
+                                    {% else %}
+                                        <span class="badge badge-secondary badge-pill">未定级</span>
+                                    {% endif %}
                                 </td>
                                 <td>{{ vuln.disclosure|date:"Y-m-d"|default:"--" }}</td>
                                 <td>{{ vuln.source }}</td>
@@ -294,8 +302,8 @@ var severityPieChart = new Chart(pieCtx, {
                 {{ severity_counts.中危|default:"0" }},
                 {{ severity_counts.低危|default:"0" }}
             ],
-            backgroundColor: ['#e74a3b', '#f6c23e', '#36b9cc', '#858796'],
-            hoverBackgroundColor: ['#be3c2f', '#daa520', '#2c9faf', '#6e7075'],
+            backgroundColor: ['#343a40', '#e74a3b', '#f6c23e', '#36b9cc'], // 深色、红色、黄色、蓝色
+            hoverBackgroundColor: ['#23272b', '#be3c2f', '#daa520', '#2c9faf'], // 深色调、红色调、黄色调、蓝色调
             hoverBorderColor: "rgba(234, 236, 244, 1)",
         }]
     },

@@ -162,15 +162,6 @@
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
                                 {% if request.user.is_authenticated %}
-                                    <a class="dropdown-item" href="#">
-                                        <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                                        个人信息
-                                    </a>
-                                    <a class="dropdown-item" href="#">
-                                        <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                                        设置
-                                    </a>
-                                    <div class="dropdown-divider"></div>
                                     <form action="{% url 'logout' %}" method="post" style="display: inline;">
                                         {% csrf_token %}
                                         <button type="submit" class="dropdown-item">
@@ -202,7 +193,7 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright © 2025 Insta360 All rights reserved.</span>
+                        <span>Copyright © 2025 漏洞预警系统</span>
                     </div>
                 </div>
             </footer>
