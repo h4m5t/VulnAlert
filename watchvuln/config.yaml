@@ -12,8 +12,8 @@ interval: "30m"
 # 是否启用CVE过滤，开启后相同CVE的漏洞只推送一次
 enable_cve_filter: true
 
-# 是否禁用推送过滤，设为true则所有新发现的漏洞都会推送
-no_filter: false
+# 是否禁用推送过滤，设为true则所有新发现的漏洞都会推送,默认为false
+no_filter: true
 
 # 是否禁用服务启动时的提示信息
 no_start_message: false
@@ -102,7 +102,7 @@ pusher:
 
 # Debug Settings
 # 是否启用调试模式，启用后会输出更详细的日志
-debug: false
+debug: true
 
 # Advanced Settings
 # 是否禁用GitHub搜索，设为true则不会搜索GitHub上的相关仓库和PR

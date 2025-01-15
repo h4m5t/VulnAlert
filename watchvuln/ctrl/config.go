@@ -26,7 +26,8 @@ type WatchVulnAppConfig struct {
 	Proxy           string              `yaml:"proxy" json:"proxy"`
 	SkipTLSVerify   bool                `yaml:"skip_tls_verify" json:"skip_tls_verify"`
 
-	NoFilter       bool          `yaml:"-" json:"-"`
+	//NoFilter       bool          `yaml:"-" json:"-"`
+	NoFilter       bool          `yaml:"no_filter" json:"no_filter"` // 移除 yaml:"-"
 	Version        string        `yaml:"-" json:"-"`
 	IntervalParsed time.Duration `json:"-" yaml:"-"`
 	PushRetryCount int           `yaml:"-" json:"-"`
