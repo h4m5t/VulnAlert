@@ -18,6 +18,11 @@ no_filter: true
 # 是否禁用服务启动时的提示信息,默认为false
 no_start_message: false
 
+
+# Advanced Settings
+# 是否禁用GitHub搜索，设为true则不会搜索GitHub上的相关仓库和PR
+no_github_search: false
+
 # 漏洞信息来源，使用数组格式
 # avd: Alibaba漏洞库
 # ti: 奇安信威胁情报中心
@@ -100,10 +105,3 @@ pusher:
     bot_token: ""    # Telegram Bot Token (格式: 123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11)
     chat_ids: ""     # 接收消息的chat ID列表，多个用逗号分隔
 
-# Debug Settings
-# 是否启用调试模式，启用后会输出更详细的日志
-debug: true
-
-# Advanced Settings
-# 是否禁用GitHub搜索，设为true则不会搜索GitHub上的相关仓库和PR
-no_github_search: false
