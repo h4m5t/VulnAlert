@@ -15,7 +15,7 @@ enable_cve_filter: true
 # 是否禁用推送过滤，设为true则所有新发现的漏洞都会推送,默认为false
 no_filter: true
 
-# 是否禁用服务启动时的提示信息
+# 是否禁用服务启动时的提示信息,默认为false
 no_start_message: false
 
 # 漏洞信息来源，使用数组格式
@@ -34,7 +34,7 @@ sources: ["avd","ti","oscs","threatbook","seebug","struts2","venustech","chaitin
 
 
 # Feature Flags
-# 是否开启差异模式，开启后跳过初始化直接检查漏洞更新
+# 是否开启差异模式，开启后跳过初始化直接检查漏洞更新,默认为false
 diff_mode: false
 
 # 是否跳过TLS证书验证

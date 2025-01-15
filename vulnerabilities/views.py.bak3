@@ -1,0 +1,94 @@
+# vulnerabilities/views.py
+
+import re
+from django.shortcuts import render, get_object_or_404
+from django.db.models import Q, Count
+from .models import Vulnerability
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def home(request):
+    # 计算总漏洞数（包括严重性为空的漏洞）
+    total_vulnerabilities = Vulnerability.objects.count()
+    
+    # 按严重性分类统计漏洞数，排除严重性为空的漏洞
+    severity_counts = Vulnerability.objects.exclude(severity__isnull=True).exclude(severity='').values('severity').annotate(count=Count('severity'))
+    
+    # 转换为字典
+    severity_counts_dict = {item['severity']: item['count'] for item in severity_counts}
+    
+    # 定义所有可能的严重性等级
+    severity_levels = ['低危', '中危', '高危', '严重']
+    
+    # 确保所有严重性等级都有对应的计数，若不存在则设为0
+    for level in severity_levels:
+        if level not in severity_counts_dict:
+            severity_counts_dict[level] = 0
+    
+    context = {
+        'total_vulnerabilities': total_vulnerabilities,
+        'severity_counts': severity_counts_dict,
+    }
+    return render(request, 'vulnerabilities/home.html', context)
+
+
+@login_required
+def vulnerability_list(request):
+    # 获取所有漏洞，按创建时间降序排列，排除严重性为空的漏洞
+    vulnerabilities = Vulnerability.objects.all().order_by('-create_time').exclude(severity__isnull=True).exclude(severity='')
+    
+    # 获取搜索参数
+    query = request.GET.get('q', '').strip()
+    
+    # 获取严重性过滤参数
+    severity_filter = request.GET.get('severity', '').strip()
+    
+    # 应用搜索条件
+    if query:
+        vulnerabilities = vulnerabilities.filter(
+            Q(key__icontains=query) |
+            Q(cve__icontains=query) |
+            Q(title__icontains=query)
+        )
+    
+    # 应用严重性过滤条件
+    if severity_filter and severity_filter in dict(Vulnerability.SEVERITY_CHOICES):
+        vulnerabilities = vulnerabilities.filter(severity=severity_filter)
+    
+    # 分页设置
+    paginator = Paginator(vulnerabilities, 10)  # 每页显示 10 条
+    page = request.GET.get('page')
+    
+    try:
+        vulnerabilities_page = paginator.page(page)
+    except PageNotAnInteger:
+        vulnerabilities_page = paginator.page(1)
+    except EmptyPage:
+        vulnerabilities_page = paginator.page(paginator.num_pages)
+    
+    context = {
+        'vulnerabilities': vulnerabilities_page,
+        'query': query,
+        'severity_filter': severity_filter,
+        'severity_choices': Vulnerability.SEVERITY_CHOICES,
+    }
+    return render(request, 'vulnerabilities/vulnerability_list.html', context)
+
+
+@login_required
+def vulnerability_detail(request, pk):
+    vulnerability = get_object_or_404(Vulnerability, pk=pk)
+    # 假设存在 references 字段，存储为 JSON 或列表
+    references = vulnerability.references  # 根据您的模型调整
+    
+    parsed_references = []
+    if references and isinstance(references, list):
+        refs_str = references[0]  # 假设 references 是列表，且第一个元素是字符串
+        parsed_references = [ref.strip() for ref in re.split(r'[;,]', refs_str) if ref.strip()]
+    
+    context = {
+        'vulnerability': vulnerability,
+        'parsed_references': parsed_references
+    }
+    return render(request, 'vulnerabilities/vulnerability_detail.html', context)

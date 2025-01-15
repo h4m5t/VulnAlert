@@ -1,3 +1,5 @@
+<!-- vulnerabilities/templates/vulnerabilities/base.html -->
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -6,61 +8,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>{% block title %}漏洞预警系统{% endblock %}</title>
-    <!-- Custom fonts -->
+    <!-- Custom fonts for this template-->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
     <!-- SB Admin 2 CSS -->
     <link href="{% static 'vulnerabilities/css/sb-admin-2.min.css' %}" rel="stylesheet">
-    <!-- Chart.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Custom styles -->
+    <!-- Custom styles for this template-->
     {% block extra_css %}{% endblock %}
-    <style>
-        /* .sidebar-brand-icon img {
-            max-width: 100%;
-            height: auto;
-            filter: brightness(0) invert(1);
-        } */
-        
-        .sidebar-brand-icon img {
-            max-width: 100%;
-            height: auto;
-            filter: brightness(1.15);  /* 仅提高亮度 */
-        }
-
-        .nav-item .nav-link:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 0.35rem;
-        }
-        
-        .topbar .dropdown-list .dropdown-header {
-            background-color: #4e73df;
-            border: 1px solid #4e73df;
-        }
-        
-        .badge-counter {
-            position: absolute;
-            transform: scale(0.7);
-            transform-origin: top right;
-            right: 0.25rem;
-            margin-top: -0.25rem;
-        }
-
-        .alert-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
-        }
-
-        #content {
-            min-height: calc(100vh - 60px);
-        }
-
-        footer {
-            height: 60px;
-        }
-    </style>
 </head>
 <body id="page-top">
     <!-- Page Wrapper -->
@@ -70,55 +23,36 @@
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'vulnerabilities:home' %}">
                 <div class="sidebar-brand-icon">
-                    <img src="{% static 'img/logo.png' %}" alt="Logo" width="45" height="45">
+                    <img src="{% static 'img/logo.png' %}" alt="Logo" width="40" height="40">
+                    <!-- <i class="fas fa-laugh-wink"></i> -->
                 </div>
                 <div class="sidebar-brand-text mx-3">漏洞预警系统</div>
             </a>
-
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
-
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+            <li class="nav-item active">
                 <a class="nav-link" href="{% url 'vulnerabilities:home' %}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>系统概览</span>
-                </a>
+                    <span>主页</span></a>
             </li>
 
             <!-- Divider -->
             <hr class="sidebar-divider">
 
-            <!-- Heading -->
-            <!-- <div class="sidebar-heading">
-                漏洞管理
-            </div> -->
-
             <!-- Nav Item - Vulnerabilities -->
-            <li class="nav-item {% if request.resolver_match.url_name == 'vulnerability_list' %}active{% endif %}">
+            <li class="nav-item">
                 <a class="nav-link" href="{% url 'vulnerabilities:vulnerability_list' %}">
-                    <i class="fas fa-fw fa-bug"></i>
-                    <span>漏洞列表</span>
-                </a>
+                    <i class="fas fa-fw fa-exclamation-triangle"></i>
+                    <span>漏洞列表</span></a>
             </li>
-
-            {% if request.user.is_staff %}
-            <!-- Divider -->
-            <!-- <hr class="sidebar-divider"> -->
-
-            <!-- Heading -->
-            <!-- <div class="sidebar-heading">
-                系统管理
-            </div> -->
 
             <!-- Nav Item - Admin -->
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'admin:index' %}">
                     <i class="fas fa-fw fa-cog"></i>
-                    <span>后台管理</span>
-                </a>
+                    <span>后台管理</span></a>
             </li>
-            {% endif %}
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
@@ -127,20 +61,23 @@
             <div class="text-center d-none d-md-inline">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>
+
         </ul>
         <!-- End of Sidebar -->
 
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
+
             <!-- Main Content -->
             <div id="content">
+
                 <!-- Topbar -->
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
                     <!-- Sidebar Toggle (Topbar) -->
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>
-
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -149,33 +86,25 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">
-                                    {% if request.user.is_authenticated %}
-                                        {{ request.user.username }}
-                                    {% else %}
-                                        访客
-                                    {% endif %}
-                                </span>
-                                <img class="img-profile rounded-circle" src="{% static 'vulnerabilities/img/undraw_profile.svg' %}">
+                                {% if request.user.is_authenticated %}
+                                    <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ request.user.username }}</span>
+                                    <img class="img-profile rounded-circle"
+                                        src="{% static 'vulnerabilities/img/undraw_profile.svg' %}">
+                                {% else %}
+                                    <span class="mr-2 d-none d-lg-inline text-gray-600 small">访客</span>
+                                    <img class="img-profile rounded-circle"
+                                        src="{% static 'vulnerabilities/img/undraw_profile.svg' %}">
+                                {% endif %}
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
                                 {% if request.user.is_authenticated %}
-                                    <a class="dropdown-item" href="#">
-                                        <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                                        个人信息
-                                    </a>
-                                    <a class="dropdown-item" href="#">
-                                        <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                                        设置
-                                    </a>
-                                    <div class="dropdown-divider"></div>
                                     <form action="{% url 'logout' %}" method="post" style="display: inline;">
                                         {% csrf_token %}
                                         <button type="submit" class="dropdown-item">
                                             <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                            退出登录
+                                            登出
                                         </button>
                                     </form>
                                 {% else %}
@@ -186,15 +115,20 @@
                                 {% endif %}
                             </div>
                         </li>
+
                     </ul>
+
                 </nav>
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
-                    {% block content %}{% endblock %}
+                    {% block content %}
+                    <!-- 页面内容将在这里填充 -->
+                    {% endblock %}
                 </div>
-                <!-- End of Page Content -->
+                <!-- /.container-fluid -->
+
             </div>
             <!-- End of Main Content -->
 
@@ -202,31 +136,41 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright © 2025 Insta360 All rights reserved.</span>
+                        <span>&copy; 2025 漏洞预警系统</span>
                     </div>
                 </div>
             </footer>
             <!-- End of Footer -->
+
         </div>
         <!-- End of Content Wrapper -->
+
     </div>
     <!-- End of Page Wrapper -->
 
-    <!-- Scroll to Top Button -->
+    <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
 
-    <!-- Core JavaScript -->
+    <!-- Bootstrap core JavaScript-->
     <script src="{% static 'vulnerabilities/vendor/jquery/jquery.min.js' %}"></script>
     <script src="{% static 'vulnerabilities/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'vulnerabilities/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
-    <script src="{% static 'vulnerabilities/js/sb-admin-2.min.js' %}"></script>
-    
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- Custom scripts -->
+    <!-- Core plugin JavaScript-->
+    <script src="{% static 'vulnerabilities/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="{% static 'vulnerabilities/js/sb-admin-2.min.js' %}"></script>
+
+    <!-- Page level plugins -->
+    <script src="{% static 'vulnerabilities/vendor/chart.js/Chart.min.js' %}"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="{% static 'vulnerabilities/js/demo/chart-area-demo.js' %}"></script>
+    <script src="{% static 'vulnerabilities/js/demo/chart-pie-demo.js' %}"></script>
+
     {% block extra_js %}{% endblock %}
+
 </body>
 </html>

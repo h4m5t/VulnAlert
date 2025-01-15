@@ -1,31 +1,209 @@
-<!-- vulnerabilities/templates/vulnerabilities/home.html -->
-
 {% extends 'vulnerabilities/base.html' %}
 
-{% block title %}首页 - 漏洞预警系统{% endblock %}
+{% block title %}系统概览 - 漏洞预警系统{% endblock %}
 
 {% block content %}
-<div class="jumbotron">
-    <h1 class="display-4">欢迎来到漏洞预警系统</h1>
-    <p class="lead">这是当前系统的整体统计信息。</p>
-    <hr class="my-4">
-    <p>以下是系统中的漏洞统计数据：</p>
-    <div class="row">
-        <!-- 总漏洞数 -->
-        <div class="col-md-4">
-            <div class="card text-white bg-info mb-3">
-                <div class="card-header">总漏洞数</div>
-                <div class="card-body">
-                    <h5 class="card-title">{{ total_vulnerabilities }}</h5>
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">系统概览</h1>
+</div>
+
+<!-- Content Row -->
+<div class="row">
+    <!-- 总漏洞数 -->
+    <div class="col-xl mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">总漏洞数</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_vulnerabilities }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-bug fa-2x text-gray-300"></i>
+                    </div>
                 </div>
             </div>
         </div>
-        <!-- 漏洞分类分布 -->
-        <div class="col-md-8">
-            <div class="card text-white bg-warning mb-3">
-                <div class="card-header">漏洞分类分布</div>
-                <div class="card-body">
-                    <canvas id="severityChart" width="400" height="200"></canvas>
+    </div>
+
+    <!-- 严重漏洞数 -->
+    <div class="col-xl mb-4">
+        <div class="card border-left-danger shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">严重漏洞</div>
+                        <div class="row no-gutters align-items-center">
+                            <div class="col-auto">
+                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ severity_counts.严重|default:"0" }}</div>
+                            </div>
+                            <div class="col">
+                                <div class="progress progress-sm mr-2">
+                                    <div class="progress-bar bg-danger" role="progressbar" 
+                                         style="width: {{ severity_percentage }}%" 
+                                         aria-valuenow="{{ severity_percentage }}" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 本月新增 -->
+    <div class="col-xl mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">本月新增</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ monthly_new }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-calendar-plus fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 本日新增 -->
+    <div class="col-xl mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">本日新增</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ daily_new }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-calendar-day fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 已推送数量 -->
+    <div class="col-xl mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">已推送</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ pushed_count }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Content Row -->
+<div class="row">
+    <!-- 漏洞趋势图 -->
+    <div class="col-xl-8 col-lg-7">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">漏洞趋势</h6>
+            </div>
+            <div class="card-body">
+                <div class="chart-area">
+                    <canvas id="vulnerabilityTrendChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 漏洞分布 -->
+    <div class="col-xl-4 col-lg-5">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">漏洞等级分布</h6>
+            </div>
+            <div class="card-body">
+                <div class="chart-pie pt-4">
+                    <canvas id="severityPieChart"></canvas>
+                </div>
+                <div class="mt-4 text-center small">
+                    <span class="mr-2">
+                        <i class="fas fa-circle text-danger"></i> 严重
+                    </span>
+                    <span class="mr-2">
+                        <i class="fas fa-circle text-warning"></i> 高危
+                    </span>
+                    <span class="mr-2">
+                        <i class="fas fa-circle text-info"></i> 中危
+                    </span>
+                    <span class="mr-2">
+                        <i class="fas fa-circle text-secondary"></i> 低危
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 最新漏洞列表 -->
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">最新漏洞</h6>
+                <a href="{% url 'vulnerabilities:vulnerability_list' %}" class="btn btn-sm btn-primary shadow-sm">
+                    查看全部
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th style="width: 38%">标题</th>
+                                <th style="width: 17%">CVE编号</th>
+                                <th style="width: 8%">严重程度</th>
+                                <th style="width: 12%">披露日期</th>
+                                <th style="width: 17%">来源</th>
+                                <th style="width: 8%">状态</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for vuln in latest_vulnerabilities %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'vulnerabilities:vulnerability_detail' vuln.id %}" class="text-primary font-weight-bold">
+                                        {{ vuln.title }}
+                                    </a>
+                                </td>
+                                <td><code>{{ vuln.cve|default:"--" }}</code></td>
+                                <td>
+                                    <span class="badge badge-{% if vuln.severity == '严重' %}danger{% elif vuln.severity == '高危' %}warning{% elif vuln.severity == '中危' %}info{% else %}secondary{% endif %} badge-pill">
+                                        {{ vuln.severity|default:"未定级" }}
+                                    </span>
+                                </td>
+                                <td>{{ vuln.disclosure|date:"Y-m-d"|default:"--" }}</td>
+                                <td>{{ vuln.source }}</td>
+                                <td>
+                                    <span class="badge badge-{% if vuln.pushed %}success{% else %}secondary{% endif %} badge-pill">
+                                        {% if vuln.pushed %}已推送{% else %}未推送{% endif %}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -34,47 +212,102 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    var ctx = document.getElementById('severityChart').getContext('2d');
-    var severityChart = new Chart(ctx, {
-        type: 'pie',
-        data: {
-            labels: ['低危', '中危', '高危', '严重'],
-            datasets: [{
-                data: [
-                    {{ severity_counts.低危|default:"0" }},
-                    {{ severity_counts.中危|default:"0" }},
-                    {{ severity_counts.高危|default:"0" }},
-                    {{ severity_counts.严重|default:"0" }}
-                ],
-                backgroundColor: [
-                    'rgba(54, 162, 235, 0.6)',    // 低危 - 蓝色
-                    'rgba(255, 206, 86, 0.6)',    // 中危 - 黄色
-                    'rgba(255, 99, 132, 0.6)',    // 高危 - 红色
-                    'rgba(255, 159, 64, 0.6)'     // 严重 - 橙色
-                ],
-                borderColor: [
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
-                borderWidth: 1
-            }]
+// 设置Chart.js的全局配置
+Chart.defaults.font.family = "'Nunito', 'sans-serif'";
+Chart.defaults.color = "#858796";
+
+// 漏洞趋势图
+var ctx = document.getElementById('vulnerabilityTrendChart').getContext('2d');
+var vulnerabilityTrendChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: {{ trend_labels|safe }},
+        datasets: [{
+            label: '漏洞数量',
+            data: {{ trend_data }},
+            lineTension: 0.3,
+            backgroundColor: "rgba(78, 115, 223, 0.05)",
+            borderColor: "rgba(78, 115, 223, 1)",
+            pointRadius: 3,
+            pointBackgroundColor: "rgba(78, 115, 223, 1)",
+            pointBorderColor: "rgba(78, 115, 223, 1)",
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+            pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+            pointHitRadius: 10,
+            pointBorderWidth: 2,
+            fill: true
+        }]
+    },
+    options: {
+        maintainAspectRatio: false,
+        layout: {
+            padding: {
+                left: 10,
+                right: 25,
+                top: 25,
+                bottom: 0
+            }
         },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'top',
+        scales: {
+            x: {
+                grid: {
+                    display: false,
+                    drawBorder: false
                 },
-                title: {
-                    display: true,
-                    text: '漏洞分类分布'
+                ticks: {
+                    maxTicksLimit: 7
+                }
+            },
+            y: {
+                ticks: {
+                    maxTicksLimit: 5,
+                    padding: 10,
+                },
+                grid: {
+                    color: "rgb(234, 236, 244)",
+                    drawBorder: false,
+                    borderDash: [2],
+                    zeroLineBorderDash: [2]
                 }
             }
         },
-    });
+        plugins: {
+            legend: {
+                display: false
+            }
+        }
+    }
+});
+
+// 漏洞严重程度分布图
+var pieCtx = document.getElementById('severityPieChart').getContext('2d');
+var severityPieChart = new Chart(pieCtx, {
+    type: 'doughnut',
+    data: {
+        labels: ['严重', '高危', '中危', '低危'],
+        datasets: [{
+            data: [
+                {{ severity_counts.严重|default:"0" }},
+                {{ severity_counts.高危|default:"0" }},
+                {{ severity_counts.中危|default:"0" }},
+                {{ severity_counts.低危|default:"0" }}
+            ],
+            backgroundColor: ['#e74a3b', '#f6c23e', '#36b9cc', '#858796'],
+            hoverBackgroundColor: ['#be3c2f', '#daa520', '#2c9faf', '#6e7075'],
+            hoverBorderColor: "rgba(234, 236, 244, 1)",
+        }]
+    },
+    options: {
+        maintainAspectRatio: false,
+        cutout: '80%',
+        plugins: {
+            legend: {
+                display: false
+            }
+        }
+    }
+});
 </script>
 {% endblock %}
