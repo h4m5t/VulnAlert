@@ -124,9 +124,9 @@ go run main.go -c config.yaml
 
 ```bash
 #Linux/Mac
-nohup go run main.go -c config.yaml > log.txt 2>&1 &
+nohup go run main.go -c config.yaml >> log.txt 2>&1 &
 #Win
-start /b watchvuln-windows-amd64.exe -c config.yaml > logs.txt 2>&1
+start /b watchvuln-windows-amd64.exe -c config.yaml >> logs.txt 2>&1
 ```
 
 也可以编译为可执行文件再运行：
